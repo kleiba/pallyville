@@ -6,6 +6,7 @@ let zoom;
 let gameState;
 let ctx;
 let screen;
+let spriteSheet = null;
 
 function resizeCanvas() {
     let canvas = document.getElementById('game');
@@ -57,12 +58,22 @@ function toggleFullscreen() {
     }
 }
 
+function loadSprites() {
+    url = "/art/sprites.png";
+    SpriteSheet.load(url, 32).then(result => {
+	spriteSheet = result;
+    });
+}
+
 function init() {
     // set the initial size of the canvas dynamically.
     resizeCanvas();
 
     // define the offscreen image
     screen = new Bitmap(ctx.createImageData(width, height));
+    
+    // load art
+    loadSprites();
     
     // TODO: define initial game state
     gameState = { 'color': 'white' };
@@ -86,6 +97,10 @@ function render() {
     // clear to white
     screen.clear(255, 255, 255);
 
+    if (spriteSheet != null) {
+	spriteSheet.render(screen, 0, 0, 0, 0);
+    }
+    
     // show
     ctx.putImageData(screen.imageData, 0, 0);
 }

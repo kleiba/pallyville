@@ -1,5 +1,5 @@
-const width = 640;
-const height = 480;
+const width = 320;
+const height = 240;
 const coverage = .75;
 
 let zoom;
@@ -19,7 +19,7 @@ function resizeCanvas() {
     // let's compute the (integer) zoom factor that would scale our
     // canvas to roughly 75% of the browser width or height
     if (windowWidth * height < windowHeight * width) {
-        zoom = Math.floor(windowWidth * 3 / (width * 4));
+        zoom = Math.floor(coverage * windowWidth / width);
         // the above computes zoom as being at most 75% of the browser
         // width but a little bit bigger is also okay
         if (windowWidth - (zoom + 1) * width >= 0 &&
@@ -27,7 +27,7 @@ function resizeCanvas() {
             zoom++;
         }
     } else {
-        zoom = Math.floor(windowHeight * 3 / (height * 4));
+        zoom = Math.floor(coverage * windowHeight / height);
         if (windowHeight - (zoom + 1) * height >= 0 &&
             (zoom+1) * height - coverage * windowWidth < coverage * windowHeight - zoom * height) {
             zoom++;
@@ -40,7 +40,7 @@ function resizeCanvas() {
     canvas.width = width;
     canvas.height = height;
     canvas.style.transform = 'scale(' + zoom + ')';
-    canvas.style.marginTop = ((windowHeight - canvas.height) / 3) + 'px';
+    canvas.style.marginTop = ((windowHeight - canvas.height) / 2) + 'px';
 
     ctx = canvas.getContext('2d', { alpha: false }); 
 }

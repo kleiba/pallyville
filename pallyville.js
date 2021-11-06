@@ -1,11 +1,11 @@
 const width = 320;
-const height = 240;
+const height = 200;
 const coverage = .75;
 
 let zoom;
 let gameState;
 let ctx;
-let screen;
+//let screen;
 let spriteSheet = null;
 
 function resizeCanvas() {
@@ -70,7 +70,7 @@ function init() {
     resizeCanvas();
 
     // define the offscreen image
-    screen = new Bitmap(ctx.createImageData(width, height));
+    //screen = new Bitmap(ctx.createImageData(width, height));
     
     // load art
     loadSprites();
@@ -95,34 +95,43 @@ function update(dtime) {
 
 function render() {
     // clear to white
-    screen.clear(255, 255, 255);
+    ctx.fillStyle = 'white';
+    ctx.fillRect(0, 0, width, height);
+
+    // TODO: implement class Bitmap with vanilla arrays, and have only 'screen' use ImageData
+    // TODO: or try WebGL
 
     if (spriteSheet != null) {
-	spriteSheet.render(screen, 0, 0, 0, 0);
+	for (let i = 0; i < 50; i++) {
+	    spriteSheet.render(ctx,
+			       Math.floor(Math.random() * width),
+			       Math.floor(Math.random() * height), 0, 0);
+	}
     }
-    
-    // show
-    ctx.putImageData(screen.imageData, 0, 0);
 }
 
-let lastLoopTime;
+let lastLoopTime = 0;
 function loop(time) {
     let dtime = time - lastLoopTime;
-    lastLoopTime = time;
 
-    if (time - debugStartTime < 5000) {
+    if (time - debugStartTime < 10000) {
 	update(dtime);
 	render();
 
+	if (dtime > 1500 / 60 && lastLoopTime > 0) {
+	    console.log("Skipped frame. (" + time + ")");
+	}
+	
 	requestAnimationFrame(loop);
     }
+
+    lastLoopTime = time;
 }
 
 let debugStartTime;
 function main() {
     init();
-    lastLoopTime = performance.now();
-    debugStartTime = lastLoopTime;
+    debugStartTime = performance.now();
     requestAnimationFrame(loop);
 }
 

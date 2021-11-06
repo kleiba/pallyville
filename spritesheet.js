@@ -12,16 +12,19 @@ class SpriteSheet {
 
     static load(url, spriteWidth, spriteHeight) {
 	return new Promise((resolutionFunction, rejectionFunction) => {
-	    Bitmap.load(url).then(bitmap => {
-		resolutionFunction(new SpriteSheet(bitmap, spriteWidth, spriteHeight));
-	    }, error => {
-		rejectionFunction(error);
-	    });
+	    const image = new Image();
+	    image.onload = function() {
+		resolutionFunction(new SpriteSheet(image, spriteWidth, spriteHeight));
+	    }
+	    image.src = url;
 	});
     }
 
-    render(targetBitmap, dstx, dsty, spriteX, spriteY) {
-	this.bitmap.render(targetBitmap, dstx, dsty, width, height,
-			   spriteX * this.spriteWidth, spriteY * this.spriteHeight);
+    render(ctx, dstx, dsty, spriteX, spriteY) {
+	ctx.drawImage(this.bitmap,
+		      spriteX * this.spriteWidth, spriteY * this.spriteHeight,
+		      this.spriteWidth, this.spriteHeight,
+		      dstx, dsty,
+		      this.spriteWidth, this.spriteHeight);
     }
 }
